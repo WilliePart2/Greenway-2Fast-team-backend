@@ -1,3 +1,7 @@
-module.exports = class TCommands {
-    static CLEAN = 'clean';
+const TCommands = {
+  CLEAN: 'clean'
+};
+
+module.exports = {
+  TCommands
 };
