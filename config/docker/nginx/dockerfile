@@ -1,6 +1,5 @@
 FROM nginx:alpine
 
-WORKDIR /srv
-COPY nginx.conf /etc/nginx/nginx.conf
+ADD nginx.conf /etc/nginx/nginx.conf
 
-VOLUME /srv
+EXPOSE 4200

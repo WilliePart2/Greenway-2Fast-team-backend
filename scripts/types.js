@@ -1,5 +1,6 @@
 const TCommands = {
-  CLEAN: 'clean'
+  CLEAN: 'clean',
+  CREATE_NGINX: 'nginx'
 };
 
 module.exports = {

@@ -4,20 +4,19 @@ let { TCommands } = require('./types');
 let { CONTAINER_NAME, APP_IMAGE, NETWORK_NAME } = require('./config');
 
 let argv = process.argv.slice(2);
-let performCleaning = argv.some(commandName => commandName === TCommands.CLEAN);
+let performCleaning = argv.some(commandName => commandMatching(commandName, TCommands.CLEAN));
+let createNginx = argv.some(commandName => commandMatching(commandName, TCommands.CREATE_NGINX))
+
+function commandMatching (cmd1, cmd2) {
+    return cmd1.replace(/-/g, '') === cmd2;
+}
 
 if (module.parent) {
     module.exports = run;
 } else {
-    run(performCleaning);
+    run(performCleaning, createNginx);
 }
 
-function run(needToClean) {
-    recreateDockerContainer(APP_IMAGE, CONTAINER_NAME, NETWORK_NAME, needToClean)
-
-    // buildFrontend()
-    //   .then(() => recreateDockerContainer(APP_IMAGE, CONTAINER_NAME, NETWORK_NAME, needToClean))
-    //   .catch(error => {
-    //       console.log('Error occur while building process', error);
-    //   });
+function run(needToClean, needToCreateNginx) {
+    recreateDockerContainer(needToClean, needToCreateNginx);
 }
