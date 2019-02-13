@@ -1,15 +1,27 @@
 const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const config = require('./config');
+const morgan = require('morgan');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const { SERVER_PORT, DB } = require('./config/app_config');
+
+let mongo = mongoose.connect(DB)
+  .then(() => console.log('Db connected successfully'))
+  .catch(e => {
+    console.error(e);
+    console.log('\nDb collection failed\n');
+  });
 
 let app = express();
-app.use(cors());
 app.use(morgan('tiny'));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.listen(config.SERVER_PORT, () => {
-    console.log(`Server listen on ${config.SERVER_PORT} port`);
+app.use((req, res) => {
+  res.send('Hello world');
+});
+
+app.listen(SERVER_PORT, () => {
+  console.log(`Sever running on ${SERVER_PORT} port`);
 });
