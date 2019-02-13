@@ -1,9 +1,10 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const { SERVER_PORT, DB } = require('./config/app_config');
+let express = require('express');
+let bodyParser = require('body-parser');
+let morgan = require('morgan');
+let cors = require('cors');
+let mongoose = require('mongoose');
+let App = require('./src/core');
+let { SERVER_PORT, DB } = require('./config/app_config');
 
 let mongo = mongoose.connect(DB)
   .then(() => console.log('Db connected successfully'))
@@ -13,6 +14,11 @@ let mongo = mongoose.connect(DB)
   });
 
 let app = express();
+/**
+ * Application wrapper initialization
+ */
+let core = new App(app);
+
 app.use(morgan('tiny'));
 app.use(cors());
 app.use(bodyParser.json());

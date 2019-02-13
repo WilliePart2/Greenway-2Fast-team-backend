@@ -1,32 +1,29 @@
-const action = require('./action');
+let action = require('./action');
+let App = require('./app');
 
-class Router {
+class Router extends App {
   constructor (expressRouter) {
+    super();
     this._router = expressRouter;
   }
 
-  use (...requestHandlingParams) {
-    let route = requestHandlingParams.shift();
-    let handlersArr = [];
+  _applyMiddleware (middleware) {
+    this._router.use(middleware);
+  }
 
-    if (typeof route !== 'string') {
-      requestHandlingParams.unshift(route);
-      route = null;
-    } else {
-      handlersArr.push(route);
+  _prepareMidleware (middleware) {
+    let handlerFn = middleware;
+
+    if (middleware instanceof  action) {
+      handlerFn = (req, res, next) => {
+        (new action(req, res, next)).execute();
+      }
+    }
+    else if (middleware instanceof Router) {
+      handlerFn = middleware._router;
     }
 
-    requestHandlingParams.forEach(requestHandler => {
-      let handlerFn = requestHandler;
-      if (requestHandler instanceof  action) {
-        handlerFn = (req, res, next) => {
-          (new action(req, res, next)).execute();
-        }
-      }
-      handlersArr.push(handlerFn);
-    });
-
-    this._router.use(...handlersArr);
+    return handlerFn;
   }
 }
 
